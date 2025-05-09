@@ -1,97 +1,90 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Personal Finance App
 
-# Getting Started
+A modern, cross-platform React Native application for tracking personal finances, visualizing spending, and gaining insights into your income and expenses.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## Features
 
-## Step 1: Start Metro
+- **Dashboard:** View your current balance, total income, and total expenses.
+- **Transactions:** Add, view, filter transactions by type (income/expense), and sort by date .
+- **Analytics:**  
+  - Pie chart of expenses by category  
+  - Bar chart of income by month (with year/month sorting)
+  - Visual spending percentage and balance cards
+- **Modern UI:**  
+  - Beautiful color palette  
+  - Responsive layouts  
+  - Floating action button for adding transactions  
+  - Modal forms with validation and keyboard handling
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## Screenshots
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+<img src="https://github.com/user-attachments/assets/e00505d3-0f24-4016-9345-82664e0fcee7" width="400" />
+<img src="https://github.com/user-attachments/assets/6d9b7d61-05b7-47fb-afbe-453713923307" width="400" />
+<img src="https://github.com/user-attachments/assets/a3b6bf3d-be94-4b9a-8746-65d324612f5e" width="400" />
+<img src="https://github.com/user-attachments/assets/e35304e7-2d4a-475f-9942-9974f58c3f89" width="400" />
+<img src="https://github.com/user-attachments/assets/fcd0e165-51e0-47d0-a62b-d9a99bc6ffa9" width="400" />
 
-```sh
-# Using npm
-npm start
 
-# OR using Yarn
-yarn start
+## Getting Started
+
+### Prerequisites
+
+- Node.js (>= 18)
+- npm
+- React Native CLI
+- Android Studio or Xcode (for running on device/emulator)
+
+### Installation
+
+1. **Clone the repository:**
+   ```sh
+   git clone https://github.com/mahmoudkhalifah/personal-finance-app.git
+   cd personal-finance-app
+   ```
+
+2. **Install dependencies:**
+   ```sh
+   npm install
+   ```
+
+3. **Install required native dependencies:**
+   ```sh
+   # For iOS:
+   npx pod-install
+   ```
+
+4. **Run the app:**
+   - For Android:
+     ```sh
+     npx react-native run-android
+     ```
+   - For iOS:
+     ```sh
+     npx react-native run-ios
+     ```
+
+## Project Structure
+
+```
+src/
+  navigation/         # The bottom bar navigator
+  components/         # Reusable UI components (TransactionList, AddTransactionModal, etc.)
+  constants/          # Color palette and other constants
+  contexts/           # React Contexts for global state (transactions)
+  screens/            # App screens (Home, Analytics, etc.)
+  utils/              # Utility functions (formatting, calculations)
+  App.tsx             # App entry point
 ```
 
-## Step 2: Build and run your app
+## Key Technologies
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+- **React Native** for cross-platform mobile development
+- **TypeScript** for type safety
+- **React Context API** for state management
 
-### Android
+## Customization
 
-```sh
-# Using npm
-npm run android
+- **Color Palette:** Easily customizable in `src/constants/Colors.ts`
+- **Categories:** Add or edit categories in `TransactionCategory` enum and color map
+- **Validation:** Form validation logic in `AddTransactionModal.tsx`
 
-# OR using Yarn
-yarn android
-```
-
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
