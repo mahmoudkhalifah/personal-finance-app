@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import COLORS from '../constants/Colors';
+import { formatAmount } from '../utils/strings';
 
 interface TransactionItemProps {
   title: string;
@@ -23,7 +24,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ title, amount, type, 
         {category && <Text style={styles.category}><Icon name="pricetag-outline" size={16} /> {category}</Text>}
       </View>
       <View style={styles.rightContent}>
-        <Text style={[styles.amount, { color: amountColor }]}><Icon name="wallet-outline" size={16} /> {sign}{amount} {currency}</Text>
+        <Text style={[styles.amount, { color: amountColor }]}><Icon name="wallet-outline" size={16} /> {sign}{formatAmount(amount)} {currency}</Text>
         <Text style={styles.date}><Icon name="calendar-outline" size={16} /> {date}</Text>
       </View>
     </View>

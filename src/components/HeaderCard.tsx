@@ -1,17 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import COLORS from '../constants/Colors';
+import { formatAmount } from '../utils/strings';
 
 interface HeaderCardProps {
   title: string;
   description?: string;
   amount: number;
   color: string;
-  currency?: string;
+  suffix?: string;
 }
 
-const HeaderCard: React.FC<HeaderCardProps> = ({ title,description, amount, color,currency = 'EGP' }) => {
-  const [displayedAmount, setDisplayedAmount] = useState('0');
+const HeaderCard: React.FC<HeaderCardProps> = ({ title,description, amount, color,suffix = 'EGP' }) => {
+  const [displayedAmount, setDisplayedAmount] = useState(0);
   const animatedValue = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -23,7 +24,7 @@ const HeaderCard: React.FC<HeaderCardProps> = ({ title,description, amount, colo
     });
 
     const id = animatedValue.addListener(({ value }) => {
-      setDisplayedAmount(value.toFixed(0));
+      setDisplayedAmount(value);
     });
 
     animation.start(() => {
@@ -45,8 +46,8 @@ const HeaderCard: React.FC<HeaderCardProps> = ({ title,description, amount, colo
       <Text style={styles.title}>{title}</Text>
       {description && <Text style={styles.description}>{description}</Text>}
       <View style={styles.amountContainer}>
-        <Animated.Text numberOfLines={1} adjustsFontSizeToFit={true} style={[styles.amount, { color: animatedColor }]}>{displayedAmount}</Animated.Text>
-        <Text style={styles.currency} >{currency}</Text>
+        <Animated.Text numberOfLines={1} adjustsFontSizeToFit={true} style={[styles.amount, { color: animatedColor }]}>{formatAmount(displayedAmount)}</Animated.Text>
+        <Text style={styles.suffix}>{suffix}</Text>
       </View>
     </View>
   );
@@ -88,7 +89,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: COLORS.black,
   },
-  currency: {
+  suffix: {
     marginStart: 4,
     fontSize: 14,
     color: COLORS.black,

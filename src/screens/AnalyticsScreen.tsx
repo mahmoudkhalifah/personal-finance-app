@@ -8,11 +8,11 @@ import {
   View,
 } from 'react-native';
 import {PieChart, BarChart} from 'react-native-chart-kit';
-import {useTransactions} from '../contexts/TransactionsContext';
 import COLORS from '../constants/Colors';
 import {
   TransactionCategory,
   TransactionType,
+  useTransactions,
 } from '../contexts/TransactionsContext';
 import HeaderCard from '../components/HeaderCard';
 import {

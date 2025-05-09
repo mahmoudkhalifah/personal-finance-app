@@ -2,7 +2,6 @@ import { Transaction, TransactionCategory, TransactionType } from '../contexts/T
 
 
 export const getTotalAmountByType = (transactions: Transaction[], type: TransactionType) => {
-    // total by type in current month
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
     return transactions.reduce((acc, transaction) => {
