@@ -4,52 +4,17 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import TransactionItem from './TransactionItem';
 import FilterBar from './FilterBar';
 import COLORS from '../constants/Colors';
+import { Transaction, TransactionType } from '../contexts/TransactionsContext';
 
 export type FilterType = 'all' | TransactionType;
-
-export enum TransactionType {
-  Income = 'income',
-  Expense = 'expense',
+interface TransactionListProps {
+    transactions: Transaction[];
 }
 
-enum TransactionCategory {
-  Food = 'Food',
-  Rent = 'Rent',
-  Groceries = 'Groceries',
-  Entertainment = 'Entertainment',
-  Other = 'Other',
-}
-
-interface Transaction {
-  id: string;
-  title: string;
-  amount: number;
-  type: TransactionType;
-  category?: string;
-  date: string;
-}
-
-const TransactionList: React.FC = () => {
+const TransactionList: React.FC<TransactionListProps> = ({ transactions }) => {
   const [selectedFilter, setSelectedFilter] = useState<FilterType>('all');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const filters: FilterType[] = ['all', TransactionType.Income, TransactionType.Expense];
-
-  const transactions: Transaction[] = [
-    {
-      id: '1', title: 'Salary', amount: 5000, date: '2023-10-01',
-      type: TransactionType.Income,
-    },
-    {
-      id: '2', title: 'Rent', amount: 1500, date: '2023-10-05',
-      type: TransactionType.Expense,
-      category: TransactionCategory.Rent,
-    },
-    {
-      id: '3', title: 'Groceries', amount: 200, date: '2023-10-10',
-      category: TransactionCategory.Groceries,
-      type: TransactionType.Expense,
-    },
-  ];
 
   const filteredTransactions = selectedFilter === 'all' ? transactions : transactions.filter(t => t.type === selectedFilter);
 
@@ -68,6 +33,15 @@ const TransactionList: React.FC = () => {
       date={item.date}
     />
   );
+
+  if(transactions.length === 0) {
+    return (
+      <View style={styles.emptyContainer}>
+        <Icon name="document-text-outline" size={100} color={COLORS.gray[400]} />
+        <Text style={styles.emptyText}>No transactions Found!</Text>
+      </View>
+    );
+  }
 
   return (
     <>
@@ -97,6 +71,17 @@ const TransactionList: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  emptyContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 16,
+    paddingVertical: 32,
+  },
+  emptyText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: COLORS.gray[400],
+  },
   list: {
     flex: 1,
   },

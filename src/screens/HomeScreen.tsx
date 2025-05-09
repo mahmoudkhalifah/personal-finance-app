@@ -6,19 +6,22 @@ import TransactionList from '../components/TransactionList';
 import AddTransactionModal from '../components/AddTransactionModal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import COLORS from '../constants/Colors';
+import { TransactionType, useTransactions } from '../contexts/TransactionsContext';
+import { getTotalAmountByType } from '../utils/transactions';
 
 const HomeScreen: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { transactions } = useTransactions();
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <View style={styles.headerContainer}>
-          <HeaderCard title="Income" amount={1000000} description="Your earnings this month!" color={COLORS.income} />
-          <HeaderCard title="Expenses" amount={3000} description="Your expenses this month!" color={COLORS.expense} />
+          <HeaderCard title="Income" amount={getTotalAmountByType(transactions, TransactionType.Income)} description="Your earnings this month!" color={COLORS.income} />
+          <HeaderCard title="Expenses" amount={getTotalAmountByType(transactions, TransactionType.Expense)} description="Your expenses this month!" color={COLORS.expense} />
         </View>
         <Text style={styles.transactionsTitle}>Transactions</Text>
-        <TransactionList />
+        <TransactionList transactions={transactions} />
       </ScrollView>
 
       <TouchableOpacity
@@ -40,6 +43,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    paddingBottom: 0,
   },
   text: {
     fontSize: 24,

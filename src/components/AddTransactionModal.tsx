@@ -1,56 +1,33 @@
 import React, { useState, useMemo } from 'react';
-import { Modal, View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Platform } from 'react-native';
+import { Modal, View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Platform, KeyboardAvoidingView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import COLORS from '../constants/Colors';
-import { TransactionType } from './TransactionList';
 import { capitalize } from '../utils/strings';
-
-enum TransactionCategory {
-  Food = 'Food',
-  Rent = 'Rent',
-  Groceries = 'Groceries',
-  Entertainment = 'Entertainment',
-  Other = 'Other',
-}
+import { Transaction, TransactionCategory, TransactionType, useTransactions } from '../contexts/TransactionsContext';
 
 interface AddTransactionModalProps {
   isVisible: boolean;
   onClose: () => void;
 }
 
-interface FormData {
-  title: string;
-  type: TransactionType;
-  category?: TransactionCategory;
-  amount: string;
-  date: string;
-}
-
-interface FormErrors {
-  title?: string;
-  type?: string;
-  category?: string;
-  amount?: string;
-  date?: string;
-}
+type TransactionFormData = Omit<Transaction, 'id'>;
 
 const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, onClose }) => {
-  const initialFormData: FormData = {
+  const initialFormData: Omit<TransactionFormData, 'id'> = {
     title: '',
     type: TransactionType.Expense,
     category: undefined,
-    amount: '',
+    amount: 0,
     date: new Date().toISOString().split('T')[0],
   };
-  const [formData, setFormData] = useState<FormData>(initialFormData);
-
+  const [formData, setFormData] = useState<TransactionFormData>(initialFormData);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [errors, setErrors] = useState<FormErrors>({});
+  const { addTransaction } = useTransactions();
 
   const isFormValid = useMemo(() => {
     const hasTitle = formData.title.trim().length > 0;
-    const hasAmount = formData.amount.trim().length > 0 && !isNaN(Number(formData.amount));
+    const hasAmount = formData.amount.toString().trim().length > 0 && !isNaN(Number(formData.amount)) && Number(formData.amount) > 0;
     const hasCategory = formData.type === TransactionType.Expense ? !!formData.category : true;
     const hasDate = formData.date.trim().length > 0;
 
@@ -68,42 +45,17 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
   };
 
   const handleAmountChange = (text: string) => {
-    // Remove any non-numeric characters except decimal point
     const numericValue = text.replace(/[^0-9.]/g, '');
-
-    // Ensure only one decimal point
     const parts = numericValue.split('.');
     if (parts.length > 2) {
       return;
     }
-
-    setFormData({ ...formData, amount: numericValue });
-  };
-
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-
-    if (!formData.title.trim()) {
-      newErrors.title = 'Title is required';
-    }
-
-    if (!formData.amount.trim()) {
-      newErrors.amount = 'Amount is required';
-    } else if (isNaN(Number(formData.amount)) || Number(formData.amount) <= 0) {
-      newErrors.amount = 'Please enter a valid amount';
-    }
-
-    if (formData.type === TransactionType.Expense && !formData.category) {
-      newErrors.category = 'Category is required for expenses';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setFormData({ ...formData, amount: +numericValue });
   };
 
   const handleSubmit = () => {
-    if (validateForm()) {
-      console.log('Form submitted:', formData);
+    if (isFormValid) {
+      addTransaction(formData);
       handleOnClose();
     }
   };
@@ -113,14 +65,16 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
     onClose();
   };
 
-
   return (
     <Modal
       animationType="slide"
       transparent={true}
       visible={isVisible}
     >
-      <View style={styles.modalOverlay}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.modalOverlay}
+      >
         <View style={styles.modalContent}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Add Transaction</Text>
@@ -133,12 +87,11 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Title</Text>
               <TextInput
-                style={[styles.input, errors.title && styles.inputError]}
+                style={styles.input}
                 value={formData.title}
                 onChangeText={(text) => setFormData({ ...formData, title: text })}
                 placeholder="Enter transaction title"
               />
-              {errors.title && <Text style={styles.errorText}>{errors.title}</Text>}
             </View>
 
             <View style={styles.inputGroup}>
@@ -182,7 +135,6 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
                     </TouchableOpacity>
                   ))}
                 </View>
-                {errors.category && <Text style={styles.errorText}>{errors.category}</Text>}
               </View>
             )}
 
@@ -190,15 +142,14 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
               <Text style={styles.label}>Amount</Text>
               <View style={styles.amountContainer}>
                 <TextInput
-                  style={[styles.amountInput, errors.amount && styles.inputError]}
-                  value={formData.amount}
+                  style={styles.amountInput}
+                  value={formData.amount.toString()}
                   onChangeText={handleAmountChange}
                   placeholder="0.00"
                   keyboardType="decimal-pad"
                   maxLength={12}
                 />
               </View>
-              {errors.amount && <Text style={styles.errorText}>{errors.amount}</Text>}
             </View>
 
             <View style={styles.inputGroup}>
@@ -236,7 +187,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({ isVisible, on
             </TouchableOpacity>
           </ScrollView>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
@@ -286,14 +237,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
-  },
-  inputError: {
-    borderColor: COLORS.expense,
-  },
-  errorText: {
-    color: COLORS.expense,
-    fontSize: 12,
-    marginTop: 4,
   },
   typeContainer: {
     flexDirection: 'row',
@@ -378,11 +321,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.gray[300],
     borderRadius: 8,
-  },
-  currencySymbol: {
-    fontSize: 16,
-    color: COLORS.gray[600],
-    marginRight: 4,
   },
   amountInput: {
     flex: 1,
