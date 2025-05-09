@@ -16,3 +16,11 @@ export const getTotalAmountByType = (transactions: Transaction[], type: Transact
 export const getTotalAmountByCategory = (transactions: Transaction[], category: TransactionCategory) => {
     return transactions.reduce((acc, transaction) => acc + (transaction.category === category ? transaction.amount : 0), 0);
 };
+
+export const getBalance = (transactions: Transaction[]) => {
+    return getTotalAmountByType(transactions, TransactionType.Income) - getTotalAmountByType(transactions, TransactionType.Expense);
+};
+
+export const getSpendingPercentage = (transactions: Transaction[]) => {
+    return (getTotalAmountByType(transactions, TransactionType.Expense) / getTotalAmountByType(transactions, TransactionType.Income)) * 100;
+};
